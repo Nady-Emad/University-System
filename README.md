@@ -1,144 +1,153 @@
 # University Management System
 
-> A Laravel-based platform for managing university operations, online exams, and student academic performance from one unified system.
+<p align="center">
+	A modern Laravel platform to manage academic operations, online exams, and student performance in one unified system.
+</p>
 
-## Project Overview
+<p align="center">
+	<img src="https://img.shields.io/badge/Laravel-12-red" alt="Laravel 12" />
+	<img src="https://img.shields.io/badge/PHP-8.2%2B-777bb4" alt="PHP 8.2+" />
+	<img src="https://img.shields.io/badge/Database-MySQL-00758f" alt="MySQL" />
+	<img src="https://img.shields.io/badge/Build-Vite-646cff" alt="Vite" />
+	<img src="https://img.shields.io/badge/License-MIT-green" alt="MIT License" />
+</p>
 
-The **University Management System** is designed to help universities digitize core academic workflows, including user management, subject enrollment, online exam delivery, grading, and performance analytics.
+## Table of Contents
 
-Built with **Laravel**, this system supports three main user roles: **Admin**, **Doctor**, and **Student**. It enables institutions to manage students and doctors efficiently, run real online exams, and track GPA/CGPA in a structured, scalable way.
+- [Overview](#overview)
+- [Key Features](#key-features)
+- [Role Capabilities](#role-capabilities)
+- [Technology Stack](#technology-stack)
+- [Architecture](#architecture)
+- [Database Model](#database-model)
+- [Quick Start](#quick-start)
+- [Default Credentials](#default-credentials)
+- [Screenshots](#screenshots)
+- [Roadmap](#roadmap)
+- [License](#license)
 
-## Features
-- Role-based authentication (Admin / Doctor / Student)
-- Student management
-- Doctor management
-- Subject management
-- Subject enrollment
-- Real exam system
-- Midterm and Final exams
-- Question bank system
-- Multiple-choice questions
-- Online exam attempts
-- Automatic grading
-- GPA and CGPA calculation
-- Doctor dashboard
-- Student dashboard
-- Admin dashboard
-- Exam statistics
-- Attempt tracking
-- Responsive UI
+## Overview
 
-## System Roles
+University Management System helps institutions digitize core workflows including:
+
+- User and role management
+- Subject assignment and enrollment
+- Online exam delivery and auto-grading
+- GPA and CGPA tracking
+- Performance dashboards for Admin, Doctor, and Student users
+
+The platform is built with Laravel MVC architecture and designed to be scalable, maintainable, and role-secure.
+
+## Key Features
+
+| Area | Highlights |
+| --- | --- |
+| Access Control | Role-based authentication for Admin, Doctor, and Student |
+| Academic Management | Student, doctor, subject, and enrollment management |
+| Exam Engine | Midterm/final exams, MCQ question bank, online attempts |
+| Grading | Automatic grading with attempt tracking |
+| Analytics | Dashboards and result/statistics views |
+| Academic KPIs | GPA/CGPA calculation + GPA simulator |
+| UX | Responsive UI for desktop and mobile |
+
+## Role Capabilities
 
 ### Admin
 
-- Manage students
-- Manage doctors
-- Manage subjects
-- Manage exams
-- View results
-- Monitor statistics
+- Manage students, doctors, subjects, and exams
+- View results and institutional statistics
+- Monitor system activity
 
 ### Doctor
 
 - Manage assigned subjects
-- Create exams
-- Add questions
-- Monitor student attempts
-- Enter and manage marks
-- View exam statistics
+- Create exams and questions
+- Track student attempts
+- Enter and maintain marks
+- Analyze exam results
 
 ### Student
 
 - View enrolled subjects
-- Take online exams
-- Submit answers
-- View results
-- View GPA and CGPA
-- Use GPA simulator
+- Take online exams and submit answers
+- Track results and GPA/CGPA
+- Use GPA simulator for planning
 
 ## Technology Stack
 
 | Technology | Purpose |
 | --- | --- |
 | Laravel 12 | Backend framework and MVC architecture |
-| PHP 8.2+ | Core server-side programming language |
+| PHP 8.2+ | Server-side language |
 | MySQL | Relational database |
 | Blade | Server-rendered templating engine |
 | Bootstrap 5 / Tailwind CSS 4 | UI styling and responsive components |
 | JavaScript (ES Modules) | Frontend interactions |
-| Vite | Asset bundling and development server |
-| Git | Version control |
-| Composer | PHP dependency management |
+| Vite | Asset bundling and dev server |
+| Composer / NPM | Dependency management |
 | XAMPP | Local development environment |
 
-## Database Structure
+## Architecture
 
-The system uses relational tables to support authentication, academic data, exams, and grading workflows.
+The project follows a role-aware MVC architecture:
 
-| Table | Purpose | Main Relationships |
+- Models: academic entities, users, exams, attempts, and results
+- Controllers: role-based workflows and business rules
+- Views: Blade portals for Admin, Doctor, and Student
+- Routes: organized in routes/web.php with prefixes and named routes
+- Middleware: authentication and role authorization
+
+## Database Model
+
+| Table | Purpose | Relationships |
 | --- | --- | --- |
-| `users` | Authentication and role storage | 1:1 with `students` or `doctors` |
-| `students` | Student profile and academic KPIs | Belongs to `users`; many-to-many with `subjects`; has many `results` and `student_exam_attempts` |
-| `doctors` | Doctor profile and specialization | Belongs to `users`; many-to-many with `subjects`; has many `exams` |
-| `subjects` | Course metadata (code, credit hours, semester) | Many-to-many with `students` and `doctors`; has many online exams |
-| `student_subject` | Student enrollment pivot table | Connects `students` and `subjects` |
-| `doctor_subject` | Doctor assignment pivot table | Connects `doctors` and `subjects` |
-| `exams` | Legacy/gradebook exam records (midterm/final) | Belongs to `doctors`; referenced by `results`; may link to online exam source |
-| `exam_questions` | Question bank per online exam | Belongs to online exam (`exam_id`) |
-| `question_choices` | MCQ options with correctness flag | Belongs to `exam_questions` |
-| `student_exam_attempts` | Student exam session and score summary | Belongs to `students` and online exams |
-| `student_answers` | Answer-level data for each attempt | Belongs to `student_exam_attempts` and `exam_questions` |
-| `results` | Persisted marks and GPA quality points | Belongs to `students` and `exams` |
+| users | Authentication and role data | 1:1 with students or doctors |
+| students | Student profile and KPI data | Belongs to users; many-to-many with subjects |
+| doctors | Doctor profile and specialization | Belongs to users; many-to-many with subjects |
+| subjects | Course metadata and credit hours | Many-to-many with students and doctors |
+| student_subject | Student enrollment pivot | Connects students and subjects |
+| doctor_subject | Doctor assignment pivot | Connects doctors and subjects |
+| exams | Legacy/gradebook exam records | Belongs to doctors; used by results |
+| exams_new | Online exams storage | Linked to online exam workflow |
+| exam_questions | Question bank | Belongs to online exams |
+| question_choices | MCQ options and correctness | Belongs to exam_questions |
+| student_exam_attempts | Attempt session and score summary | Belongs to students and online exams |
+| student_answers | Per-question answer data | Belongs to attempts and questions |
+| results | Persisted marks and quality points | Belongs to students and exams |
 
-> Note: In this project, online exams are stored in a dedicated table (`exams_new`) and connected to `exams` for result synchronization.
+## Quick Start
 
-## System Architecture
-
-This project follows Laravel's **MVC architecture**:
-
-- **Models**: Represent business entities such as users, students, subjects, exams, attempts, and results.
-- **Controllers**: Handle role-based business logic, exam workflows, and dashboard data.
-- **Views**: Blade templates provide separate interfaces for Admin, Doctor, and Student portals.
-- **Routes**: Organized in `routes/web.php` with role prefixes and named routes.
-- **Middleware**: Authentication and role-based access control secure each portal.
-
-## Installation Guide
-### 1. Clone the Repository
+### 1) Clone Repository
 
 ```bash
-git clone <repository-url>
-cd university-system
+git clone https://github.com/Nady-Emad/University-System.git
+cd University-System
 ```
 
-### 2. Install Dependencies
+### 2) Install Dependencies
 
 ```bash
 composer install
 npm install
 ```
 
-### 3. Create Environment File
+### 3) Setup Environment
 
 ```bash
 cp .env.example .env
+php artisan key:generate
 ```
 
 For Windows PowerShell:
 
 ```powershell
 Copy-Item .env.example .env
-```
-
-### 4. Generate Application Key
-
-```bash
 php artisan key:generate
 ```
 
-### 5. Configure Database
+### 4) Configure Database
 
-Update `.env` with your MySQL credentials:
+Update .env:
 
 ```env
 DB_CONNECTION=mysql
@@ -149,69 +158,54 @@ DB_USERNAME=root
 DB_PASSWORD=
 ```
 
-### 6. Run Migrations
+### 5) Migrate and Seed
 
 ```bash
 php artisan migrate
-```
-
-### 7. Run Seeders (if available)
-
-```bash
 php artisan db:seed
 ```
 
-### 8. Build/Run Frontend Assets
+### 6) Run Frontend and Server
 
 ```bash
 npm run dev
-```
-
-### 9. Start the Server
-
-```bash
 php artisan serve
 ```
 
-Open: `http://127.0.0.1:8000`
+Application URL: http://127.0.0.1:8000
 
-## Default Login Credentials
-
-> These accounts are available after running seeders.
+## Default Credentials
 
 | Role | Email | Password |
 | --- | --- | --- |
-| Admin | `admin@university.com` | `password` |
-| Doctor | `m.ali@university.com` | `password` |
-| Student | `ahmed.hassan@student.com` | `password` |
+| Admin | admin@university.com | password |
+| Doctor | m.ali@university.com | password |
+| Student | ahmed.hassan@student.com | password |
 
 ## Screenshots
-### Admin Dashboard
-![Admin Dashboard](docs/screenshots/admin-dashboard.png)
 
-### Doctor Dashboard
-![Doctor Dashboard](docs/screenshots/doctor-dashboard.png)
+| Module | Preview |
+| --- | --- |
+| Admin Dashboard | ![Admin Dashboard](docs/screenshots/admin-dashboard.png) |
+| Doctor Dashboard | ![Doctor Dashboard](docs/screenshots/doctor-dashboard.png) |
+| Student Portal | ![Student Portal](docs/screenshots/student-portal.png) |
+| Exam Interface | ![Exam Interface](docs/screenshots/exam-interface.png) |
 
-### Student Portal
-![Student Portal](docs/screenshots/student-portal.png)
+## Roadmap
 
-### Exam Interface
-![Exam Interface](docs/screenshots/exam-interface.png)
-
-## Future Improvements
-- AI-based grading
-- Exam proctoring
-- Question randomization
-- Mobile app
-- Notifications
-- Analytics dashboard
+- AI-assisted grading
+- Online proctoring
+- Question randomization strategies
+- Mobile application
+- Notification center
+- Advanced analytics dashboards
 
 ## Author
 
-**University System Team**
+University System Team
 
 ## License
 
-This project is licensed under the **MIT License**. See the `LICENSE` file for details.
+Licensed under the MIT License.
 
 
